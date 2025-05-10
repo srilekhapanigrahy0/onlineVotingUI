@@ -3,8 +3,8 @@ import React from 'react';
 const Content = () => {
   return (
     <main>
-      <h2>Main Content</h2>
-      <p>This is the main content area.</p>
+      <h2>Hello Srilekha</h2>
+      <p>Welcome to the e-voting portal.</p>
     </main>
   );
 };

@@ -16,6 +16,7 @@ import Breadcrumb from './components/_layout/Breadcrumb';
 import CreateCompany from './components/Company/CreateCompany';
 import ManageCompany from './components/Company/ManageCompany';
 import ViewCompany from './components/Company/ViewCompany';
+import EditCompany from './components/Company/EditCompany';
 
 import ViewProfile from './components/Profile/ViewProfile';
 import Login from './components/Security/Login/Login';
@@ -48,7 +49,8 @@ const App = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/company" element={<ManageCompany />} />
                 <Route path="/company/create" element={<CreateCompany />} />
-                <Route path="/view-company/:id" element={<ViewCompany />} />
+                <Route path="/company/view/:id" element={<ViewCompany />} />
+                <Route path="/company/edit/:id" element={<EditCompany />} />
                 {/* <Route path="/team" element={<Team />} />
                 <Route path="/contact/email" element={<Email />} />
                 <Route path="/contact/phone" element={<Phone />} />
