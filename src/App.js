@@ -18,6 +18,11 @@ import ManageCompany from './components/Company/ManageCompany';
 import ViewCompany from './components/Company/ViewCompany';
 import EditCompany from './components/Company/EditCompany';
 
+import ManageElection from './components/Election/ManageElection';
+import CreateElection from './components/Election/CreateElection';
+import EditElection from './components/Election/EditElection';
+import ViewElection from './components/Election/ViewElection';
+
 import ViewProfile from './components/Profile/ViewProfile';
 import Login from './components/Security/Login/Login';
 
@@ -47,10 +52,17 @@ const App = () => {
                 <Route path="/view-profile" element={<ViewProfile />} />
                 
                 <Route path="/login" element={<Login />} />
+
                 <Route path="/company" element={<ManageCompany />} />
                 <Route path="/company/create" element={<CreateCompany />} />
                 <Route path="/company/view/:id" element={<ViewCompany />} />
                 <Route path="/company/edit/:id" element={<EditCompany />} />
+
+                <Route path="/election" element={<ManageElection />} />
+                <Route path="/election/create" element={<CreateElection />} />
+                <Route path="/election/view/:id" element={<ViewElection />} />
+                <Route path="/election/edit/:id" element={<EditElection />} />
+              
                 {/* <Route path="/team" element={<Team />} />
                 <Route path="/contact/email" element={<Email />} />
                 <Route path="/contact/phone" element={<Phone />} />
