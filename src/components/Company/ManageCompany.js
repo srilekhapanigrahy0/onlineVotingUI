@@ -98,7 +98,6 @@ const ManageCompany = () => {
         )
       ),
     },
-    { field: 'Groups', headerName: 'Groups', width: 150 },
     {
       field: 'active',
       headerName: 'Active',
@@ -155,6 +154,12 @@ const ManageCompany = () => {
         rows={companies} 
         columns={columns} 
         pageSize={pageSize} 
+        sx={{
+          fontSize: '12px',
+          '.MuiDataGrid-cell': { py: 0.5, px: 1 },
+          '.MuiDataGrid-columnHeader': { py: 0.5, maxHeight: '32px', minHeight: '32px', },
+          '.MuiDataGrid-row': { maxHeight: '32px', minHeight: '32px', }, 
+        }}
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         rowsPerPageOptions={[5, 10, 25]} 
         pagination 

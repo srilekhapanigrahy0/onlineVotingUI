@@ -5,7 +5,6 @@ import { TextField, Button, Paper, Snackbar, Input, Typography } from '@mui/mate
 const CreateCompany = () => {
   const [name, setName] = useState('');
   const [details, setDetails] = useState('');
-  const [open, setOpen] = useState(false);
   const [logo, setLogo] = useState(null);
   const [logoPreview, setLogoPreview] = useState(null);
   const [nameError, setNameError] = useState('');
@@ -24,12 +23,8 @@ const CreateCompany = () => {
       return;
     }
     setNameError('');
-    setOpen(true);
-    navigate('/company');
-  };
-
-  const handleClose = () => {
-    setOpen(false);
+    //navigate('/company');
+    navigate('/company', { state: { message: 'Company created successfully!' } });
   };
 
   const handleFileUpload = (event) => {
@@ -106,13 +101,6 @@ const CreateCompany = () => {
       >
         Create Company
       </Button>
-
-      <Snackbar
-        open={open}
-        autoHideDuration={6000}
-        onClose={handleClose}
-        message="Company created successfully"
-      />
     </Paper>
   );
 };
