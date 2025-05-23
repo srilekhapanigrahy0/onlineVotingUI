@@ -75,6 +75,7 @@ const Sidebar = ({ open, onClose }) => {
     { name: 'Home', icon: <HomeIcon />, submenus: [], link: '/' }, // No submenus for Home
     { name: 'Company', icon: <BusinessIcon />, submenus: [], link: '/company'},
     { name: 'Election', icon: <InfoIcon />, submenus: [], link: '/election'},
+    { name: 'ElectionGroup', icon: <InfoIcon />, submenus: [], link: '/electionGroup'},
     { name: 'Candidate', icon: <InfoIcon />, submenus: [
       { name: 'Candidate registration', icon: <BusinessIcon />, link: '/company' },
       { name: 'Team', icon: <GroupIcon />, link: '/team' },

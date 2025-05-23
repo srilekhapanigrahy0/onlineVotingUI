@@ -36,6 +36,8 @@ const ManageElection = () => {
   const columns = [
     { field: 'companyName', headerName: 'Company Name', width: 200 },
     { field: 'electionName', headerName: 'Election Name', width: 200 },
+    { field: '', headerName: 'Start Date', width: 200 },
+    { field: '', headerName: 'End Date', width: 200 },
     { field: 'createdBy', headerName: 'Created By', width: 120 },
     { field: 'createdOn', headerName: 'Created On', width: 120 },
     { field: 'active', headerName: 'Active', width: 100 },
@@ -143,7 +145,7 @@ const ManageElection = () => {
         rowsPerPageOptions={[5, 10, 25]} 
         pagination 
         autoHeight
-        />
+      />
         
       <Dialog open={openDialog} onClose={handleCancelDelete}>
         <DialogTitle>Confirm Deletion</DialogTitle>

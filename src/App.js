@@ -23,6 +23,11 @@ import CreateElection from './components/Election/CreateElection';
 import EditElection from './components/Election/EditElection';
 import ViewElection from './components/Election/ViewElection';
 
+import ManageGroup from './components/ElectionGroup/ManageGroup';
+import CreateGroup from './components/ElectionGroup/CreateGroup';
+import EditGroup from './components/ElectionGroup/EditGroup';
+import ViewGroup from './components/ElectionGroup/ViewGroup';
+
 import ViewProfile from './components/Profile/ViewProfile';
 import Login from './components/Security/Login/Login';
 
@@ -62,6 +67,11 @@ const App = () => {
                 <Route path="/election/create" element={<CreateElection />} />
                 <Route path="/election/view/:id" element={<ViewElection />} />
                 <Route path="/election/edit/:id" element={<EditElection />} />
+
+                <Route path="/electiongroup" element={<ManageGroup />} />
+                <Route path="/electiongroup/create" element={<CreateGroup />} />
+                <Route path="/electiongroup/view/:id" element={<ViewGroup />} />
+                <Route path="/electiongroup/edit/:id" element={<EditGroup />} />               
               
                 {/* <Route path="/team" element={<Team />} />
                 <Route path="/contact/email" element={<Email />} />
