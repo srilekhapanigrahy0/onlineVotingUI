@@ -77,7 +77,7 @@ const Sidebar = ({ open, onClose }) => {
     { name: 'Election', icon: <InfoIcon />, submenus: [], link: '/election'},
     { name: 'ElectionGroup', icon: <InfoIcon />, submenus: [], link: '/electionGroup'},
     { name: 'Candidate', icon: <InfoIcon />, submenus: [
-      { name: 'Candidate registration', icon: <BusinessIcon />, link: '/company' },
+      { name: 'CandidateRegistration', icon: <BusinessIcon />, link: '/candidateregistration' },
       { name: 'Team', icon: <GroupIcon />, link: '/team' },
     ]},
     { name: 'Voter', icon: <InfoIcon />, submenus: [
