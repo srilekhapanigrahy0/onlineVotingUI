@@ -5,7 +5,7 @@ import { Button, Tooltip, Switch, IconButton, Dialog, DialogActions, DialogConte
 import { Edit, Visibility, Delete } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 import { Snackbar } from '@mui/material';
-
+import { fetchCompaniesByUserId } from '../../api/companyApi'; // adjust path as needed
 
 const ManageCompany = () => {
   const [companies, setCompanies] = useState([]);
@@ -13,17 +13,21 @@ const ManageCompany = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const location = useLocation();
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' | 'error' | 'info' | 'warning'
   const [openSnackbar, setOpenSnackbar] = useState(!!location.state?.message);
   const navigate = useNavigate();
 
   useEffect(() => {
     // Updated company list with realistic names
-    setCompanies([
-      { id: 1, name: 'National Institute of Science and Technology', createdBy: 'Pranab', Groups: '3', createdOn: '2025-01-01', status: 'approved', rejectedReason: '', active: true },
-      { id: 2, name: 'Infosys Pvt Ltd.', createdBy: 'Manisha', Groups: '3', createdOn: '2025-01-02', status: 'rejected', rejectedReason: 'Incomplete details', active: false },
-      { id: 3, name: 'Manipal University', createdBy: 'Srilekha', Groups: '3', createdOn: '2025-01-03', status: 'pending', rejectedReason: '', active: true },
-      { id: 4, name: 'Indian Govt.', createdBy: 'Aadarsha', Groups: '3', createdOn: '2025-01-04', status: 'approved', rejectedReason: '', active: false },
-    ]);
+    // setCompanies([
+    //   { id: 1, name: 'National Institute of Science and Technology', createdBy: 'Pranab', Groups: '3', createdOn: '2025-01-01', status: 'approved', rejectedReason: '', active: true },
+    //   { id: 2, name: 'Infosys Pvt Ltd.', createdBy: 'Manisha', Groups: '3', createdOn: '2025-01-02', status: 'rejected', rejectedReason: 'Incomplete details', active: false },
+    //   { id: 3, name: 'Manipal University', createdBy: 'Srilekha', Groups: '3', createdOn: '2025-01-03', status: 'pending', rejectedReason: '', active: true },
+    //   { id: 4, name: 'Indian Govt.', createdBy: 'Aadarsha', Groups: '3', createdOn: '2025-01-04', status: 'approved', rejectedReason: '', active: false },
+    // ]);
+
+    loadCompanies();
 
     // Show Snackbar if redirected after deletion
     if (location.state?.message) {
@@ -34,6 +38,25 @@ const ManageCompany = () => {
 
     }
   }, [location, navigate]);
+
+  const loadCompanies = async () => {
+    try {
+      const userId = 3; 
+      const data = await fetchCompaniesByUserId(userId);
+      setCompanies(data);
+      setSnackbarMessage('Companies loaded successfully!');
+      setSnackbarSeverity('success');
+      setOpenSnackbar(true);
+    } catch (err) {
+      console.error('Failed to fetch companies:', err);
+      setSnackbarMessage('Failed to load companies.');
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
+      // setError('Failed to load companies');
+    } finally {
+      // setLoading(false);
+    }
+  };
 
   const handleToggleActive = (id) => {
     setCompanies((prevCompanies) =>
@@ -138,6 +161,13 @@ const ManageCompany = () => {
 
   return (
     <div style={{ height: 400, width: '100%' }}>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={4000}
+        onClose={() => setOpenSnackbar(false)}
+        message={snackbarMessage}
+      />
+
       {location.state?.message && (
         <Snackbar
           open={openSnackbar}
@@ -145,6 +175,9 @@ const ManageCompany = () => {
           onClose={() => setOpenSnackbar(false)}
           message={location.state.message}
         />
+
+        
+
       )}
 
       <Button variant="contained" color="primary" onClick={() => navigate('/company/create')} style={{ margin: '16px 0' }}>

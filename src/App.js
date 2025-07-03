@@ -31,7 +31,6 @@ import ViewGroup from './components/ElectionGroup/ViewGroup';
 import ManageCandidate from './components/CandidateRegistration/ManageCandidate';
 import CreateCandidate from './components/CandidateRegistration/CreateCandidate';
 import EditCandidate from './components/CandidateRegistration/EditCandidate';
-import ViewCandidate from './components/CandidateRegistration/ViewCandidate';
 
 import ViewProfile from './components/Profile/ViewProfile';
 import Login from './components/Security/Login/Login';
@@ -80,7 +79,6 @@ const App = () => {
 
                 <Route path="/CandidateRegistration" element={<ManageCandidate />} />
                 <Route path="/CandidateRegistration/create" element={<CreateCandidate />} />
-                <Route path="/CandidateRegistration/view/:id" element={<ViewCandidate />} />
                 <Route path="/CandidateRegistration/edit/:id" element={<EditCandidate />} />                             
               
                 {/* <Route path="/team" element={<Team />} />
