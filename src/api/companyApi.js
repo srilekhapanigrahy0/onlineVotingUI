@@ -19,3 +19,21 @@ export const createCompany = async (companyData) => {
     throw error;
   }
 };
+
+export const getCompanyDetailsById = async (companyId) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/getCompanyDetailsById/${companyId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateCompanyDetails = async (companyId, companyData) => {
+  try {
+    const response = await axios.put(`${BASE_URL}/updateCompanyDetails/${companyId}`, companyData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
