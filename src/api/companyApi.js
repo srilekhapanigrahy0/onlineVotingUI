@@ -10,3 +10,12 @@ export const fetchCompaniesByUserId = async (userId) => {
     throw error;
   }
 };
+
+export const createCompany = async (companyData) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/createCompany`, companyData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

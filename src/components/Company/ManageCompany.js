@@ -5,7 +5,9 @@ import { Button, Tooltip, Switch, IconButton, Dialog, DialogActions, DialogConte
 import { Edit, Visibility, Delete } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 import { Snackbar } from '@mui/material';
-import { fetchCompaniesByUserId } from '../../api/companyApi'; // adjust path as needed
+import { fetchCompaniesByUserId } from '../../api/companyApi';
+import Alert from '@mui/material/Alert';
+
 
 const ManageCompany = () => {
   const [companies, setCompanies] = useState([]);
@@ -19,29 +21,24 @@ const ManageCompany = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Updated company list with realistic names
-    // setCompanies([
-    //   { id: 1, name: 'National Institute of Science and Technology', createdBy: 'Pranab', Groups: '3', createdOn: '2025-01-01', status: 'approved', rejectedReason: '', active: true },
-    //   { id: 2, name: 'Infosys Pvt Ltd.', createdBy: 'Manisha', Groups: '3', createdOn: '2025-01-02', status: 'rejected', rejectedReason: 'Incomplete details', active: false },
-    //   { id: 3, name: 'Manipal University', createdBy: 'Srilekha', Groups: '3', createdOn: '2025-01-03', status: 'pending', rejectedReason: '', active: true },
-    //   { id: 4, name: 'Indian Govt.', createdBy: 'Aadarsha', Groups: '3', createdOn: '2025-01-04', status: 'approved', rejectedReason: '', active: false },
-    // ]);
-
     loadCompanies();
 
-    // Show Snackbar if redirected after deletion
+    // Show Snackbar if redirected from other page
     if (location.state?.message) {
+      setSnackbarMessage(location.state.message);
+      setSnackbarSeverity(location.state.severity || 'success');
       setOpenSnackbar(true);
       setTimeout(() => {
         navigate('/company', { state: null }); // Reset state to avoid future Snackbar triggers
       }, 6000); 
 
     }
-  }, [location, navigate]);
+  }, [location.state]);
 
   const loadCompanies = async () => {
     try {
-      const userId = 3; 
+      const userId = localStorage.getItem('userId');
+
       const data = await fetchCompaniesByUserId(userId);
       setCompanies(data);
       setSnackbarMessage('Companies loaded successfully!');
@@ -121,18 +118,18 @@ const ManageCompany = () => {
         )
       ),
     },
-    {
-      field: 'active',
-      headerName: 'Active',
-      width: 150,
-      renderCell: (params) => (
-        <Switch
-          checked={params.value}
-          onChange={() => handleToggleActive(params.row.id)}
-          color="primary"
-        />
-      ),
-    },
+    // {
+    //   field: 'active',
+    //   headerName: 'Active',
+    //   width: 150,
+    //   renderCell: (params) => (
+    //     <Switch
+    //       checked={params.value}
+    //       onChange={() => handleToggleActive(params.row.id)}
+    //       color="primary"
+    //     />
+    //   ),
+    // },
     {
       field: 'actions',
       headerName: 'Actions',
@@ -165,20 +162,16 @@ const ManageCompany = () => {
         open={openSnackbar}
         autoHideDuration={4000}
         onClose={() => setOpenSnackbar(false)}
-        message={snackbarMessage}
-      />
-
-      {location.state?.message && (
-        <Snackbar
-          open={openSnackbar}
-          autoHideDuration={6000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert
           onClose={() => setOpenSnackbar(false)}
-          message={location.state.message}
-        />
-
-        
-
-      )}
+          severity={snackbarSeverity} // 'success', 'error', 'warning', or 'info'
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
 
       <Button variant="contained" color="primary" onClick={() => navigate('/company/create')} style={{ margin: '16px 0' }}>
         Create New Company
