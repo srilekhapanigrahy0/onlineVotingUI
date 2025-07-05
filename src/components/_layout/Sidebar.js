@@ -17,6 +17,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import FactoryIcon from '@mui/icons-material/Factory';
 import ListRoundedIcon from '@mui/icons-material/ListRounded';
 import SettingsIcon from '@mui/icons-material/Settings';
+import HowToVoteIcon from '@mui/icons-material/HowToVote';
 import InfoIcon from '@mui/icons-material/Info';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
 import HelpIcon from '@mui/icons-material/Help';
@@ -74,7 +75,7 @@ const Sidebar = ({ open, onClose }) => {
   const menus = [
     { name: 'Home', icon: <HomeIcon />, submenus: [], link: '/' }, // No submenus for Home
     { name: 'Company', icon: <BusinessIcon />, submenus: [], link: '/company'},
-    { name: 'Election', icon: <InfoIcon />, submenus: [], link: '/election'},
+    { name: 'Election', icon: <HowToVoteIcon />, submenus: [], link: '/election'},
     { name: 'ElectionGroup', icon: <InfoIcon />, submenus: [], link: '/electionGroup'},
     { name: 'Candidate', icon: <InfoIcon />, submenus: [
       { name: 'CandidateRegistration', icon: <BusinessIcon />, link: '/candidateregistration' },

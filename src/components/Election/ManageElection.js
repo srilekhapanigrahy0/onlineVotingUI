@@ -1,50 +1,116 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Tooltip, IconButton, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { Button, Tooltip, Switch, IconButton, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useLocation } from 'react-router-dom';
 import { Snackbar } from '@mui/material';
 import { Edit, Visibility, Delete } from '@mui/icons-material';
+import { getAllElectionsByUserId } from '../../api/electionApi';
+import Alert from '@mui/material/Alert';
 
 const ManageElection = () => {
-  const navigate = useNavigate();
-  const [myData, setElectionsData] = useState([]);
+  const [elections, setElections] = useState([]);
   const [pageSize, setPageSize] = useState(10);
-  const location = useLocation();
-  const [deleteId, setDeleteId] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const location = useLocation();
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' | 'error' | 'info' | 'warning'
   const [openSnackbar, setOpenSnackbar] = useState(!!location.state?.message);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    setElectionsData([
-      {id:1, active:'active', companyName:'asd', electionName: 'panchayat', createdBy: 'Ram', createdOn: '2025-01-01', status: 'approved', group: 3, action: true},
-      {id:2, active:'inactive', companyName:'vdf', electionName: 'student election', createdBy: 'Sita', createdOn: '2025-08-12', status: 'pending', group: 3, action: false}
-    ]);
+    loadElections();
 
-    // Show Snackbar if redirected after deletion
+    // Show Snackbar if redirected from other page
     if (location.state?.message) {
+      setSnackbarMessage(location.state.message);
+      setSnackbarSeverity(location.state.severity || 'success');
       setOpenSnackbar(true);
-      
       setTimeout(() => {
-        location.state = null;
         navigate('/election', { state: null }); // Reset state to avoid future Snackbar triggers
       }, 6000); 
 
     }
-  }, [location, navigate]);
-  
+  }, [location.state]);
+
+  const loadElections = async () => {
+    try {
+      const userId = localStorage.getItem('userId');
+
+      const data = await getAllElectionsByUserId(userId);
+      console.log(data);
+      setElections(data);
+      setSnackbarMessage('Elections loaded successfully!');
+      setSnackbarSeverity('success');
+      setOpenSnackbar(true);
+    } catch (err) {
+      console.error('Failed to fetch elections:', err);
+      setSnackbarMessage('Failed to load elections.');
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
+      // setError('Failed to load elections');
+    } finally {
+      // setLoading(false);
+    }
+  };
+
+  const handleToggleActive = (id) => {
+    setElections((prevElections) =>
+      prevElections.map((election) =>
+        election.id === id ? { ...election, active: !election.active } : election
+      )
+    );
+  };
+
+  const getStatusStyle = (status) => {
+    switch (status) {
+      case 'approved':
+        return { color: 'green', cursor: 'pointer' };
+      case 'rejected':
+        return { color: 'red', cursor: 'pointer' };
+      case 'pending':
+        return { color: 'brown', cursor: 'pointer' };
+      default:
+        return { cursor: 'pointer' };
+    }
+  };
+
+  const handleEdit = (id) => {
+    navigate(`/election/edit/${id}`);
+  };
+
+  const handleView = (id) => {
+    navigate(`/election/view/${id}`);
+  };
+
+  const handleDeleteClick = (id) => {
+    setDeleteId(id);
+    setOpenDialog(true);
+  };
+
+  const handleConfirmDelete = () => {
+    setElections(elections.filter((election) => election.id !== deleteId));
+    setOpenDialog(false);
+    setDeleteId(null);
+  };
+
+  const handleCancelDelete = () => {
+    setOpenDialog(false);
+    setDeleteId(null);
+  };
+
+
   const columns = [
-    { field: 'companyName', headerName: 'Company Name', width: 200 },
-    { field: 'electionName', headerName: 'Election Name', width: 200 },
-    { field: '', headerName: 'Start Date', width: 200 },
-    { field: '', headerName: 'End Date', width: 200 },
-    { field: 'createdBy', headerName: 'Created By', width: 120 },
-    { field: 'createdOn', headerName: 'Created On', width: 120 },
-    { field: 'active', headerName: 'Active', width: 100 },
-    {
+    { field: 'company_id', headerName: 'Company Name', width: 150 },
+    { field: 'name', headerName: 'Election Name', width: 200 },
+    { field: 'start_date', headerName: 'Start Date', width: 150 },
+    { field: 'end_date', headerName: 'End Date', width: 150 },
+    { field: 'created_by', headerName: 'Created By', width: 150 },
+        {
       field: 'status',
       headerName: 'Status',
-      width: 100,
+      width: 150,
       renderCell: (params) => (
         params.value === 'rejected' ? (
           <Tooltip title={params.row.rejectedReason}>
@@ -55,7 +121,19 @@ const ManageElection = () => {
         )
       ),
     },
-    { field: 'group', headerName: 'Groups', width: 75 },
+    
+    // {
+    //   field: 'active',
+    //   headerName: 'Active',
+    //   width: 150,
+    //   renderCell: (params) => (
+    //     <Switch
+    //       checked={params.value}
+    //       onChange={() => handleToggleActive(params.row.id)}
+    //       color="primary"
+    //     />
+    //   ),
+    // },
     {
       field: 'actions',
       headerName: 'Actions',
@@ -72,7 +150,6 @@ const ManageElection = () => {
               <Visibility />
             </IconButton>
           </Tooltip>
-          
           <Tooltip title="Delete">
             <IconButton onClick={() => handleDeleteClick(params.row.id)} color="error">
               <Delete />
@@ -83,56 +160,28 @@ const ManageElection = () => {
     },
   ];
 
-  const handleEdit = (id) => {
-    navigate(`/election/edit/${id}`);
-  };
-   const handleView = (id) => {
-    navigate(`/election/view/${id}`);
-  };
-  const handleDeleteClick = (id) => {
-    setDeleteId(id);
-    setOpenDialog(true);
-  };
-  const handleConfirmDelete = () => {
-    setElectionsData(myData.filter((x) => x.id !== deleteId));
-    setOpenDialog(false);
-    setDeleteId(null);
-  };
-  const handleCancelDelete = () => {
-    setOpenDialog(false);
-    setDeleteId(null);
-  };
-
-  const getStatusStyle = (status) => {
-    switch (status) {
-      case 'approved':
-        return { color: 'green', cursor: 'pointer' };
-      case 'rejected':
-        return { color: 'red', cursor: 'pointer' };
-      case 'pending':
-        return { color: 'brown', cursor: 'pointer' };
-      default:
-        return { cursor: 'pointer' };
-    }
-  };
-
   return (
     <div style={{ height: 400, width: '100%' }}>
-      {location.state?.message && (
-          <Snackbar
-            open={openSnackbar}
-            autoHideDuration={6000}
-            onClose={() => setOpenSnackbar(false)}
-            message={location.state.message}
-          />
-        )}
-      
-      <Button variant="contained" color="primary" onClick={() => navigate('/election/create')} style={{ margin: '16px 0' }}>
-        Create New Election
-      </Button>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={4000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert
+          onClose={() => setOpenSnackbar(false)}
+          severity={snackbarSeverity} // 'success', 'error', 'warning', or 'info'
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
 
+      <Button variant="contained" color="primary" onClick={() => navigate('/election/create')} style={{ margin: '16px 0' }}>
+        Create New election
+      </Button>
       <DataGrid 
-        rows={myData} 
+        rows={elections} 
         columns={columns} 
         pageSize={pageSize} 
         sx={{
@@ -149,7 +198,7 @@ const ManageElection = () => {
         
       <Dialog open={openDialog} onClose={handleCancelDelete}>
         <DialogTitle>Confirm Deletion</DialogTitle>
-        <DialogContent>Are you sure you want to delete this company?</DialogContent>
+        <DialogContent>Are you sure you want to delete this election?</DialogContent>
         <DialogActions>
           <Button onClick={handleCancelDelete} color="primary">Cancel</Button>
           <Button onClick={handleConfirmDelete} color="error">Delete</Button>
