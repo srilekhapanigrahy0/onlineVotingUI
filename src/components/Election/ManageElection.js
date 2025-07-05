@@ -7,6 +7,7 @@ import { Snackbar } from '@mui/material';
 import { Edit, Visibility, Delete } from '@mui/icons-material';
 import { getAllElectionsByUserId } from '../../api/electionApi';
 import Alert from '@mui/material/Alert';
+import GroupsIconIcon from '@mui/icons-material/BlurLinear';
 
 const ManageElection = () => {
   const [elections, setElections] = useState([]);
@@ -89,6 +90,10 @@ const ManageElection = () => {
     setOpenDialog(true);
   };
 
+  const handleGroupClick = (id) => {
+     navigate(`/election/${id}/group`);
+  };
+
   const handleConfirmDelete = () => {
     setElections(elections.filter((election) => election.id !== deleteId));
     setOpenDialog(false);
@@ -137,7 +142,7 @@ const ManageElection = () => {
     {
       field: 'actions',
       headerName: 'Actions',
-      width: 150,
+      width: 200,
       renderCell: (params) => (
         <>
           <Tooltip title="Edit">
@@ -153,6 +158,11 @@ const ManageElection = () => {
           <Tooltip title="Delete">
             <IconButton onClick={() => handleDeleteClick(params.row.id)} color="error">
               <Delete />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Groups">
+            <IconButton onClick={() => handleGroupClick(params.row.id)} color="error">
+              <GroupsIconIcon />
             </IconButton>
           </Tooltip>
         </>

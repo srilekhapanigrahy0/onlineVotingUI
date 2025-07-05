@@ -70,12 +70,13 @@ const App = () => {
                 <Route path="/election" element={<ManageElection />} />
                 <Route path="/election/create" element={<CreateElection />} />
                 <Route path="/election/view/:id" element={<ViewElection />} />
+                <Route path="/election/:id" element={<ViewElection />} />
                 <Route path="/election/edit/:id" element={<EditElection />} />
 
-                <Route path="/electiongroup" element={<ManageGroup />} />
-                <Route path="/electiongroup/create" element={<CreateGroup />} />
-                <Route path="/electiongroup/view/:id" element={<ViewGroup />} />
-                <Route path="/electiongroup/edit/:id" element={<EditGroup />} /> 
+                <Route path="/election/:electionId/group" element={<ManageGroup />} />
+                <Route path="/election/:electionId/group/create" element={<CreateGroup />} />
+                <Route path="/election/:electionId/group/view/:id" element={<ViewGroup />} />
+                <Route path="/election/:electionId/group/edit/:id" element={<EditGroup />} /> 
 
                 <Route path="/CandidateRegistration" element={<ManageCandidate />} />
                 <Route path="/CandidateRegistration/create" element={<CreateCandidate />} />
