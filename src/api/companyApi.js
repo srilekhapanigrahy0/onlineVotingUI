@@ -37,3 +37,12 @@ export const updateCompanyDetails = async (companyId, companyData) => {
     throw error;
   }
 };
+
+export const deleteCompany = async (companyId) => {
+  try {
+    const response = await axios.delete(`${BASE_URL}/deleteCompany/${companyId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
