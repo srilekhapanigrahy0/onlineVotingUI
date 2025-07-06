@@ -1,71 +1,118 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Paper, Snackbar, Input, Typography } from '@mui/material';
+import { TextField, Button, Paper, Snackbar, Input, Typography, Box, Alert, } from '@mui/material';
+import { createElection } from '../../api/electionApi';
 
 const CreateElection = () => {
-  const [name, setName] = useState('');
-  const [details, setDetails] = useState('');
-  const [nameError, setNameError] = useState('');
+  const userId = localStorage.getItem('userId');
+  const [electionName, setElectionName] = useState('');
+  const [electionNameError, setElectionNameError] = useState('');
+  const [electionDetails, setelectionDetails] = useState('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+
   const navigate = useNavigate();
 
   const handleReset = () => {
-    setName('');
-    setDetails('');
+    setElectionName('');
+    setelectionDetails('');
   };
-  const handleSave = () => {
-    if (!name.trim()) {
-      setNameError('Election Name is required');
+
+  const handleSubmit = async () => {
+    if (!electionName.trim()) {
+      setElectionNameError('Election Name is required');
+      setSnackbarMessage('Election Name is required');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
       return;
     }
-    setNameError('');
-    //navigate('/company');
-    navigate('/Election', { state: { message: 'Election created successfully!' } });
+    setElectionNameError('');
+    try {
+      const payload = {
+        companyId: "",
+        name: electionName,
+        startDate: "",
+        endDate: "",
+        details: "",
+        createdBy: userId,
+        createdDate: new Date(),
+        status: "A",
+        approvedBy: 0,
+        approvedDate: new Date(),
+        comment: "Approved by system",
+        lastUpdateDate: new Date(),
+      };
+
+      const data = await createElection(payload);
+
+      // Redirect with success message
+      navigate('/election', {
+        state: { message: 'Election created successfully!', severity: 'success' },
+      });
+    } catch (error) {
+      setSnackbarMessage('Failed to create election. Please try again.');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
   };
+
   return (
     <Paper style={{ padding: 16 }}>
+      <Typography variant="h5" gutterBottom>
+        Create Company
+      </Typography>
+
       <TextField
-        label="Election Name *"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        variant="outlined"
+        label="Election Name"
+        value={electionName}
+        onChange={(e) => setElectionName(e.target.value)}
         fullWidth
+        required
         margin="normal"
-        error={!!nameError}
-        helperText={nameError}
+        error={!!electionNameError}
+        helperText={electionNameError}
       />
+
       <TextField
-        label="Details"
-        value={details}
-        onChange={(e) => setDetails(e.target.value)}
-        variant="outlined"
+        label="Company Details"
+        value={electionDetails}
+        onChange={(e) => setelectionDetails(e.target.value)}
         fullWidth
         margin="normal"
         multiline
         rows={4}
       />
-      <Button 
-        variant="contained" 
-        color="warning" 
-        onClick={handleReset} 
-        style={{ marginTop: 16, marginRight: 16 }}
-        >
-        Reset
-      </Button>
 
-      <Button 
-        variant="contained" 
-        color="primary" 
-        onClick={handleSave} 
-        style={{ marginTop: 16 }} 
-        disabled={!name.trim()}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+        <Button 
+        variant="outlined" 
+        onClick={handleReset}>
+          Reset
+        </Button>
+
+        <Button 
+          variant="contained" 
+          onClick={handleSubmit}>
+          Create Election
+        </Button>
+      </Box>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
-        Create Election
-      </Button>
-      
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Paper>
-
-      
-    
   );
 };
 
