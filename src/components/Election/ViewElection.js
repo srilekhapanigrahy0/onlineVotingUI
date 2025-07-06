@@ -15,43 +15,47 @@ import {
 import { useParams, useNavigate } from 'react-router-dom';
 import { getElectionDetailsById, deleteElection } from '../../api/electionApi';
 
-const ViewCompany = () => {
+const ViewElection = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [company, setCompany] = useState(null);
+  const [election, setElection] = useState(null);
   const [loading, setLoading] = useState(true);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [confirmOpen, setConfirmOpen] = useState(false);
 
-  // Fetch company data on load
+  // Fetch Election data on load
   useEffect(() => {
-    const fetchCompany = async () => {
+    const fetchElection = async () => {
       try {
         const data = await getElectionDetailsById(id);
-        setCompany(data);
+        setElection(data);
       } catch (error) {
-        setSnackbar({ open: true, message: 'Failed to load company data.', severity: 'error' });
+        setSnackbar({ open: true, message: 'Failed to load election data.', severity: 'error' });
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCompany();
+    fetchElection();
   }, [id]);
 
   const handleEdit = () => {
     navigate(`/election/edit/${id}`);
   };
 
+  const handleApprove = () => {
+    navigate(`/election/edit/${id}`);
+  };
+  
   const handleDelete = async () => {
     try {
       await deleteElection(id);
       navigate('/election', {
-        state: { message: 'Company deleted successfully!', severity: 'success' },
+        state: { message: 'Election deleted successfully!', severity: 'success' },
       });
     } catch (error) {
-      setSnackbar({ open: true, message: 'Failed to delete company.', severity: 'error' });
+      setSnackbar({ open: true, message: 'Failed to delete election.', severity: 'error' });
     } finally {
       setConfirmOpen(false);
     }
@@ -68,22 +72,27 @@ const ViewCompany = () => {
   return (
     <Paper style={{ padding: 16 }}>
       <Typography variant="h5" gutterBottom>
-        Company Details
+        Election Details
       </Typography>
 
-      {company && (
+      {election && (
         <Box sx={{ mt: 2 }}>
-          <Typography><strong>Name:</strong> {company.name}</Typography>
-          <Typography><strong>Logo:</strong> {company.logo || 'N/A'}</Typography>
-          <Typography><strong>Created By:</strong> {company.createdBy}</Typography>
-          <Typography><strong>Created Date:</strong> {company.createdDate}</Typography>
-          <Typography><strong>Approved By:</strong> {company.approvedBy || 'N/A'}</Typography>
-          <Typography><strong>Approved Date:</strong> {company.approvedDate || 'N/A'}</Typography>
-          <Typography><strong>Comment:</strong> {company.comment || 'N/A'}</Typography>
-          <Typography><strong>Last Update Date:</strong> {company.lastUpdateDate}</Typography>
+          <Typography><strong>Company:</strong> {election.companyId}</Typography>
+          <Typography><strong>Name:</strong> {election.name}</Typography>
+          <Typography><strong>Start Date:</strong> {election.startDate}</Typography>
+          <Typography><strong>End Date:</strong> {election.endDate}</Typography>
+          <Typography><strong>Details:</strong> {election.details}</Typography>
+          <Typography><strong>Created By:</strong> {election.createdBy}</Typography>
+          <Typography><strong>Created Date:</strong> {election.createdDate}</Typography>
+          <Typography><strong>Status:</strong> {election.status || 'P'}</Typography>
+          <Typography><strong>Approved By:</strong> {election.approvedBy || 'N/A'}</Typography>
+          <Typography><strong>Approved Date:</strong> {election.approvedDate || 'N/A'}</Typography>
+          <Typography><strong>Comment:</strong> {election.comment || 'N/A'}</Typography>
+          <Typography><strong>Last Update Date:</strong> {election.lastUpdateDate}</Typography>
 
           <Box sx={{ display: 'flex', gap: 2, mt: 4 }}>
             <Button variant="contained" onClick={handleEdit}>Edit</Button>
+            <Button variant="contained" onClick={handleApprove}>Approve</Button>
             <Button variant="outlined" color="error" onClick={() => setConfirmOpen(true)}>
               Delete
             </Button>
@@ -94,7 +103,7 @@ const ViewCompany = () => {
       {/* Confirm Delete Dialog */}
       <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
         <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>Are you sure you want to delete this company?</DialogContent>
+        <DialogContent>Are you sure you want to delete this Election?</DialogContent>
         <DialogActions>
           <Button onClick={() => setConfirmOpen(false)}>Cancel</Button>
           <Button onClick={handleDelete} color="error">Yes, Delete</Button>
@@ -120,4 +129,4 @@ const ViewCompany = () => {
   );
 };
 
-export default ViewCompany;
+export default ViewElection;

@@ -18,6 +18,10 @@ const CreateElection = () => {
   const [companies, setCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState('');
   const [companyError, setCompanyError] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [dateError, setDateError] = useState('');
+
 
 
   const navigate = useNavigate();
@@ -41,6 +45,10 @@ const CreateElection = () => {
     setElectionName('');
     setelectionDetails('');
     setSelectedCompany('');
+    setStartDate('');
+    setEndDate('');
+
+    setDateError('');
     setCompanyError('');
   };
 
@@ -59,7 +67,23 @@ const CreateElection = () => {
       setSnackbarOpen(true);
       return;
     }
+    if (!startDate || !endDate) {
+      setDateError('Start and End dates are required');
+      setSnackbarMessage('Please select both start and end dates');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+      return;
+    }
 
+    if (new Date(startDate) > new Date(endDate)) {
+      setDateError('Start date cannot be after end date');
+      setSnackbarMessage('Start date must be before end date');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+      return;
+    }
+
+    setDateError('');
     setCompanyError('');
     setElectionNameError('');
     try {
@@ -69,8 +93,8 @@ const CreateElection = () => {
       const payload = {
         companyId: selectedCompany,
         name: electionName,
-        startDate: new Date(),
-        endDate: new Date(),
+        startDate: new Date(startDate).toISOString(),
+        endDate: new Date(endDate).toISOString(),
         details: electionDetails,
         createdBy: userId,
         createdDate: new Date(),
@@ -137,6 +161,28 @@ const CreateElection = () => {
         margin="normal"
         multiline
         rows={4}
+      />
+      <TextField
+        label="Start Date"
+        type="date"
+        value={startDate}
+        onChange={(e) => setStartDate(e.target.value)}
+        fullWidth
+        margin="normal"
+        InputLabelProps={{ shrink: true }}
+        error={!!dateError}
+      />
+
+      <TextField
+        label="End Date"
+        type="date"
+        value={endDate}
+        onChange={(e) => setEndDate(e.target.value)}
+        fullWidth
+        margin="normal"
+        InputLabelProps={{ shrink: true }}
+        error={!!dateError}
+        helperText={dateError}
       />
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
