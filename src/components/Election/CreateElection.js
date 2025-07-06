@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Paper, Snackbar, Input, Typography, Box, Alert, } from '@mui/material';
 import { createElection } from '../../api/electionApi';
+import { fetchCompaniesByUserId } from '../../api/companyApi';
+import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { useEffect } from 'react';
+
 
 const CreateElection = () => {
   const userId = localStorage.getItem('userId');
@@ -11,12 +15,33 @@ const CreateElection = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const [companies, setCompanies] = useState([]);
+  const [selectedCompany, setSelectedCompany] = useState('');
+  const [companyError, setCompanyError] = useState('');
+
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+
+
+    fetchCompanies();
+  }, []);
+
+  const fetchCompanies = async () => {
+    try {
+      const response = await fetchCompaniesByUserId(userId); // Adjust based on your API
+      setCompanies(response); // Ensure response is an array of companies
+    } catch (error) {
+      console.error('Failed to fetch companies:', error);
+    }
+  };
 
   const handleReset = () => {
     setElectionName('');
     setelectionDetails('');
+    setSelectedCompany('');
+    setCompanyError('');
   };
 
   const handleSubmit = async () => {
@@ -27,20 +52,32 @@ const CreateElection = () => {
       setSnackbarOpen(true);
       return;
     }
+    if (!selectedCompany) {
+      setCompanyError('Company selection is required');
+      setSnackbarMessage('Please select a company');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+      return;
+    }
+
+    setCompanyError('');
     setElectionNameError('');
     try {
+
+
+
       const payload = {
-        companyId: "",
+        companyId: selectedCompany,
         name: electionName,
-        startDate: "",
-        endDate: "",
-        details: "",
+        startDate: new Date(),
+        endDate: new Date(),
+        details: electionDetails,
         createdBy: userId,
         createdDate: new Date(),
-        status: "A",
-        approvedBy: 0,
-        approvedDate: new Date(),
-        comment: "Approved by system",
+        status: "P",
+        approvedBy: null,
+        approvedDate: null,
+        comment: "",
         lastUpdateDate: new Date(),
       };
 
@@ -60,8 +97,26 @@ const CreateElection = () => {
   return (
     <Paper style={{ padding: 16 }}>
       <Typography variant="h5" gutterBottom>
-        Create Company
+        Create Election
       </Typography>
+
+      <FormControl fullWidth margin="normal" error={!!companyError}>
+        <InputLabel id="company-label">Select Company</InputLabel>
+        <Select
+          labelId="company-label"
+          value={selectedCompany}
+          onChange={(e) => setSelectedCompany(e.target.value)}
+          label="Select Company"
+        >
+          {companies.map((company) => (
+            <MenuItem key={company.id} value={company.id}>
+              {company.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
+
 
       <TextField
         label="Election Name"
@@ -75,7 +130,7 @@ const CreateElection = () => {
       />
 
       <TextField
-        label="Company Details"
+        label="Election Details"
         value={electionDetails}
         onChange={(e) => setelectionDetails(e.target.value)}
         fullWidth
