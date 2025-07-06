@@ -13,13 +13,14 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getElectionDetailsById, deleteElection } from '../../api/electionApi';
+import { getElectionDetailsById, deleteElection, updateElectionDetails } from '../../api/electionApi';
 
 const ViewElection = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const userId = localStorage.getItem('userId');
 
-  const [election, setElection] = useState(null);
+  const [electionData, setElection] = useState(null);
   const [loading, setLoading] = useState(true);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -40,11 +41,27 @@ const ViewElection = () => {
     fetchElection();
   }, [id]);
 
-  const handleEdit = () => {
-    navigate(`/election/edit/${id}`);
+  const handleApprove = async () => {
+    try {
+      const payload = {
+        ...electionData,
+        status: "A",
+        approvedBy: userId,
+        approvedDate: new Date(),
+        comment: "Approved....",
+        lastUpdateDate: new Date(),
+      };
+
+      await updateElectionDetails(id,payload);
+      navigate('/election', {
+        state: { message: 'Election Approved successfully!', severity: 'success' },
+      });
+    } catch (error) {
+      setSnackbar({ open: true, message: 'Failed to update election. Please try again.', severity: 'error' });
+    }
   };
 
-  const handleApprove = () => {
+  const handleEdit = () => {
     navigate(`/election/edit/${id}`);
   };
   
@@ -75,20 +92,20 @@ const ViewElection = () => {
         Election Details
       </Typography>
 
-      {election && (
+      {electionData && (
         <Box sx={{ mt: 2 }}>
-          <Typography><strong>Company:</strong> {election.companyId}</Typography>
-          <Typography><strong>Name:</strong> {election.name}</Typography>
-          <Typography><strong>Start Date:</strong> {election.startDate}</Typography>
-          <Typography><strong>End Date:</strong> {election.endDate}</Typography>
-          <Typography><strong>Details:</strong> {election.details}</Typography>
-          <Typography><strong>Created By:</strong> {election.createdBy}</Typography>
-          <Typography><strong>Created Date:</strong> {election.createdDate}</Typography>
-          <Typography><strong>Status:</strong> {election.status || 'P'}</Typography>
-          <Typography><strong>Approved By:</strong> {election.approvedBy || 'N/A'}</Typography>
-          <Typography><strong>Approved Date:</strong> {election.approvedDate || 'N/A'}</Typography>
-          <Typography><strong>Comment:</strong> {election.comment || 'N/A'}</Typography>
-          <Typography><strong>Last Update Date:</strong> {election.lastUpdateDate}</Typography>
+          <Typography><strong>Company:</strong> {electionData.companyId}</Typography>
+          <Typography><strong>Name:</strong> {electionData.name}</Typography>
+          <Typography><strong>Start Date:</strong> {electionData.startDate}</Typography>
+          <Typography><strong>End Date:</strong> {electionData.endDate}</Typography>
+          <Typography><strong>Details:</strong> {electionData.details}</Typography>
+          <Typography><strong>Created By:</strong> {electionData.createdBy}</Typography>
+          <Typography><strong>Created Date:</strong> {electionData.createdDate}</Typography>
+          <Typography><strong>Status:</strong> {electionData.status || 'P'}</Typography>
+          <Typography><strong>Approved By:</strong> {electionData.approvedBy || 'N/A'}</Typography>
+          <Typography><strong>Approved Date:</strong> {electionData.approvedDate || 'N/A'}</Typography>
+          <Typography><strong>Comment:</strong> {electionData.comment || 'N/A'}</Typography>
+          <Typography><strong>Last Update Date:</strong> {electionData.lastUpdateDate}</Typography>
 
           <Box sx={{ display: 'flex', gap: 2, mt: 4 }}>
             <Button variant="contained" onClick={handleEdit}>Edit</Button>

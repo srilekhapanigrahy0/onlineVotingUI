@@ -1,91 +1,109 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { TextField, Button, Paper, Snackbar, Input, Typography, Box, Alert, CircularProgress } from '@mui/material';
+import {
+  TextField, Button, Paper, Snackbar, Typography, Box, Alert,
+  Select, MenuItem, FormControl, InputLabel
+} from '@mui/material';
+import { fetchCompaniesByUserId } from '../../api/companyApi';
 import { getElectionDetailsById, updateElectionDetails } from '../../api/electionApi';
 
-
 const EditElection = () => {
-  const { id } = useParams(); 
-
+  const { id } = useParams(); // Get election ID from URL
   const navigate = useNavigate();
+  const userId = localStorage.getItem('userId');
 
   const [electionData, setElectionData] = useState(null);
-  const [formData, setFormData] = useState({ name: '', details: '' });
-  const [loading, setLoading] = useState(true);
 
+  const [electionName, setElectionName] = useState('');
+  const [electionDetails, setElectionDetails] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [selectedCompany, setSelectedCompany] = useState('');
+  const [companies, setCompanies] = useState([]);
+
+  const [electionNameError, setElectionNameError] = useState('');
+  const [companyError, setCompanyError] = useState('');
+  const [dateError, setDateError] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
-  const fetchElection = async () => {
+  useEffect(() => {
+    fetchCompanies();
+    fetchElectionDetails();
+  }, []);
+
+  const fetchCompanies = async () => {
+    try {
+      const response = await fetchCompaniesByUserId(userId);
+      setCompanies(response);
+    } catch (error) {
+      console.error('Failed to fetch companies:', error);
+    }
+  };
+
+  const fetchElectionDetails = async () => {
     try {
       const data = await getElectionDetailsById(id);
-      console.log(data)
       setElectionData(data);
-      setFormData({ name: data.name, details: data.details || '' });
+
+      setElectionName(data.name);
+      setElectionDetails(data.details);
+      setStartDate(data.startDate.slice(0, 10)); // Format to yyyy-mm-dd
+      setEndDate(data.endDate.slice(0, 10));
+      setSelectedCompany(data.companyId);
     } catch (error) {
-      setSnackbarMessage('Failed to load Election data.');
-      setSnackbarSeverity('error');
-      setSnackbarOpen(true);
-    } finally {
-      setLoading(false);
+      console.error('Failed to fetch election:', error);
     }
   };
 
-  // Fetch Election data on page load
-  useEffect(() => {
-
-    fetchElection();
-  }, [id]);
-
-  const handleReset = () => {
-    if (electionData) {
-      setFormData({ name: electionData.name, details: electionData.details || '' });
+  const handleSubmit = async () => {
+    if (!electionName.trim()) {
+      setElectionNameError('Election Name is required');
+      showSnackbar('Election Name is required', 'error');
+      return;
     }
-  };
-
-  const handleUpdate = async () => {
-    if (!formData.name.trim()) {
-      setSnackbarMessage('Election name is required.');
-      setSnackbarSeverity('error');
-      setSnackbarOpen(true);
+    if (!selectedCompany) {
+      setCompanyError('Company selection is required');
+      showSnackbar('Please select a company', 'error');
+      return;
+    }
+    if (!startDate || !endDate) {
+      setDateError('Start and End dates are required');
+      showSnackbar('Please select both start and end dates', 'error');
+      return;
+    }
+    if (new Date(startDate) > new Date(endDate)) {
+      setDateError('Start date cannot be after end date');
+      showSnackbar('Start date must be before end date', 'error');
       return;
     }
 
-    const userId = localStorage.getItem('userId');
-    if(userId != electionData.createdBy)
-      electionData.status = "P";
-    
     try {
-      console.log(formData);
-      console.log(electionData);
       const payload = {
         ...electionData,
-        name: formData.name,
-        //details: formData.details,
+        companyId: selectedCompany,
+        name: electionName,
+        startDate: new Date(startDate).toISOString(),
+        endDate: new Date(endDate).toISOString(),
+        details: electionDetails,
         lastUpdateDate: new Date(),
       };
-      console.log("Final payload: ")
-      console.log(payload);
-      const data = await updateElectionDetails(id, payload);
 
+      await updateElectionDetails(id,payload);
       navigate('/election', {
         state: { message: 'Election updated successfully!', severity: 'success' },
       });
     } catch (error) {
-      setSnackbarMessage('Failed to update Election. Please try again.');
-      setSnackbarSeverity('error');
-      setSnackbarOpen(true);
+      showSnackbar('Failed to update election. Please try again.', 'error');
     }
   };
 
-  if (loading) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
+  const showSnackbar = (message, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
 
   return (
     <Paper style={{ padding: 16 }}>
@@ -93,31 +111,69 @@ const EditElection = () => {
         Edit Election
       </Typography>
 
+      <FormControl fullWidth margin="normal" error={!!companyError}>
+        <InputLabel id="company-label">Select Company</InputLabel>
+        <Select
+          labelId="company-label"
+          value={selectedCompany}
+          onChange={(e) => setSelectedCompany(e.target.value)}
+          label="Select Company"
+        >
+          {companies.map((company) => (
+            <MenuItem key={company.id} value={company.id}>
+              {company.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
       <TextField
         label="Election Name"
-        value={formData.name}
-        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+        value={electionName}
+        onChange={(e) => setElectionName(e.target.value)}
         fullWidth
         required
         margin="normal"
+        error={!!electionNameError}
+        helperText={electionNameError}
       />
 
       <TextField
         label="Election Details"
-        value={formData.details}
-        onChange={(e) => setFormData({ ...formData, details: e.target.value })}
+        value={electionDetails}
+        onChange={(e) => setElectionDetails(e.target.value)}
         fullWidth
+        margin="normal"
         multiline
         rows={4}
-        margin="normal"
       />
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-        <Button variant="outlined" onClick={handleReset}>
-          Reset
-        </Button>
-        <Button variant="contained" onClick={handleUpdate}>
-          Update
+      <TextField
+        label="Start Date"
+        type="date"
+        value={startDate}
+        onChange={(e) => setStartDate(e.target.value)}
+        fullWidth
+        margin="normal"
+        InputLabelProps={{ shrink: true }}
+        error={!!dateError}
+      />
+
+      <TextField
+        label="End Date"
+        type="date"
+        value={endDate}
+        onChange={(e) => setEndDate(e.target.value)}
+        fullWidth
+        margin="normal"
+        InputLabelProps={{ shrink: true }}
+        error={!!dateError}
+        helperText={dateError}
+      />
+
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+        <Button variant="contained" onClick={handleSubmit}>
+          Update Election
         </Button>
       </Box>
 
