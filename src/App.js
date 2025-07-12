@@ -44,6 +44,7 @@ const theme = createTheme({
 
 const App = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const userId = localStorage.getItem('userId');
 
   const handleSidebarToggle = () => {
     setSidebarOpen(!sidebarOpen);
@@ -54,7 +55,10 @@ const App = () => {
       <CssBaseline />
       <Router>
         <Box sx={{ display: 'flex', minHeight: '100vh', flexDirection: 'column' }}>
-          <Header onSidebarToggle={handleSidebarToggle} />
+          {
+            (userId != null) &&
+            <Header onSidebarToggle={handleSidebarToggle} />
+          }
           <Box sx={{ display: 'flex', flexGrow: 1 }}>
             
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
@@ -98,7 +102,10 @@ const App = () => {
             </Box>
             <Sidebar open={sidebarOpen} onClose={handleSidebarToggle} />
           </Box>
-          <Footer />
+          {
+            (userId != null) &&
+            <Footer />
+          }
         </Box>
       </Router>
     </ThemeProvider>

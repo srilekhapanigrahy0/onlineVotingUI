@@ -15,8 +15,25 @@ function DashboardPage() {
     const fetchData = async () => {
       try {
         const userResponse = await axios.get('http://localhost:8080/api/users/user', { withCredentials: true });
-        setUserInfo(userResponse.data);
-        console.log(userResponse)
+        console.log(userResponse.data);
+        if (
+          userResponse &&
+          userResponse.data &&
+          typeof userResponse.data === 'object' &&
+          Object.keys(userResponse.data).length === 0
+        ){
+          localStorage.clear();
+          navigate('/');
+        }
+        else{
+          setUserInfo(userResponse.data);
+          localStorage.setItem("userId", userResponse.data.userId)
+        }
+
+
+
+
+
 
         // Fetch roles (you might need a new backend endpoint for this)
         // For now, let's assume /api/roles returns ["ROLE_USER"] or ["ROLE_ADMIN"]
@@ -44,11 +61,12 @@ function DashboardPage() {
 
   const handleLogout = async () => {
     try {
-      await axios.post('http://localhost:8080/api/logout', {}, { withCredentials: true });
-      setUserInfo(null);
-      setMessage('');
-      setRoles([]);
-      alert("Logged out successfully!");
+      // await axios.post('http://localhost:8080/api/logout', {}, { withCredentials: true });
+      // setUserInfo(null);
+      // setMessage('');
+      // setRoles([]);
+      // alert("Logged out successfully!");
+      localStorage.clear();
       navigate('/');
     } catch (err) {
       console.error('Error during logout:', err);
