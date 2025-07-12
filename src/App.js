@@ -10,7 +10,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import Header from './components/_layout/Header';
 import Footer from './components/_layout/Footer';
 import Sidebar from './components/_layout/Sidebar';
-import Content from './components/_layout/Content';
+import Dashboard from './components/_layout/Content';
 import Breadcrumb from './components/_layout/Breadcrumb';
 
 import CreateCompany from './components/Company/CreateCompany';
@@ -31,6 +31,9 @@ import ViewGroup from './components/ElectionGroup/ViewGroup';
 import ManageCandidate from './components/CandidateRegistration/ManageCandidate';
 import CreateCandidate from './components/CandidateRegistration/CreateCandidate';
 import EditCandidate from './components/CandidateRegistration/EditCandidate';
+
+import Homepage from './components/Homepage';
+import UserLoginPage from './components/UserLogin';
 
 import ViewProfile from './components/Profile/ViewProfile';
 import Login from './components/Security/Login/Login';
@@ -57,10 +60,11 @@ const App = () => {
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
             <Breadcrumb /> {/* Add Breadcrumb component */}
               <Routes>
-                <Route path="/" element={<Content />} />
+                <Route path="/" element={<Homepage />} />
+                <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/view-profile" element={<ViewProfile />} />
-                
-                <Route path="/login" element={<Login />} />
+                <Route path="/user-login" element={<UserLoginPage />} />
+                {/* <Route path="/login" element={<Login />} /> */}
 
                 <Route path="/company" element={<ManageCompany />} />
                 <Route path="/company/create" element={<CreateCompany />} />
