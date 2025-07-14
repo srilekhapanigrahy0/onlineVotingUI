@@ -7,6 +7,7 @@ import { Snackbar } from '@mui/material';
 import { Edit, Visibility, Delete } from '@mui/icons-material';
 import { getAllElectionGroupsByElectionId } from '../../api/electionGroupApi';
 import Alert from '@mui/material/Alert';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 import GroupsIconIcon from '@mui/icons-material/BlurLinear';
 import { useParams } from 'react-router-dom';
 
@@ -92,6 +93,10 @@ const ManageGroup = () => {
     setOpenDialog(true);
   };
 
+  const handleVloterListClick = (id) => {
+    navigate(`/election/${electionId}/group/${id}/votorList`);
+  };
+
   const handleGroupClick = (id) => {
      navigate(`/election/${id}/group`);
   };
@@ -144,7 +149,7 @@ const ManageGroup = () => {
     {
       field: 'actions',
       headerName: 'Actions',
-      width: 150,
+      width: 180,
       renderCell: (params) => (
         <>
           <Tooltip title="Edit">
@@ -162,9 +167,14 @@ const ManageGroup = () => {
               <Delete />
             </IconButton>
           </Tooltip>
+          <Tooltip title="Delete">
+            <IconButton onClick={() => handleVloterListClick(params.row.id)} color="gray">
+              <UploadFileIcon />
+            </IconButton>
+          </Tooltip>
         </>
       ),
-    },
+    }
   ];
 
   return (

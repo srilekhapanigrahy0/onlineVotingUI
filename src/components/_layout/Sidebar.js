@@ -32,6 +32,8 @@ import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import SupportIcon from '@mui/icons-material/Support';
 import RateReviewIcon from '@mui/icons-material/RateReview';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import WcIcon from '@mui/icons-material/Wc';
+import ViewModuleIcon from '@mui/icons-material/ViewModule';
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -77,13 +79,12 @@ const Sidebar = ({ open, onClose }) => {
     { name: 'Company', icon: <BusinessIcon />, submenus: [], link: '/company'},
     { name: 'Election', icon: <HowToVoteIcon />, submenus: [], link: '/election'},
     // { name: 'ElectionGroup', icon: <InfoIcon />, submenus: [], link: '/electionGroup'},
-    { name: 'Candidate', icon: <InfoIcon />, submenus: [
-      { name: 'CandidateRegistration', icon: <BusinessIcon />, link: '/candidateregistration' },
-      { name: 'Team', icon: <GroupIcon />, link: '/team' },
+    { name: 'Candidate', icon: <WcIcon />, submenus: [
+      { name: 'View All', icon: <ViewModuleIcon />, link: '/election/candidate' }
     ]},
-    { name: 'Voter', icon: <InfoIcon />, submenus: [
-      { name: 'Voter list upload', icon: <BusinessIcon />, link: '/company' },
-    ]},
+    // { name: 'Voter', icon: <InfoIcon />, submenus: [
+    //   { name: 'Voter list upload', icon: <BusinessIcon />, link: '/company' },
+    // ]},
     { name: 'master configuration', icon: <ContactMailIcon />, submenus: [
       { name: 'Country', icon: <EmailIcon />, link: '/contact/email' },
       { name: 'State', icon: <PhoneIcon />, link: '/contact/phone' },

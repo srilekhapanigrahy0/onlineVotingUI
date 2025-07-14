@@ -5,6 +5,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useLocation } from 'react-router-dom';
 import { Snackbar } from '@mui/material';
 import { Edit, Visibility, Delete } from '@mui/icons-material';
+import WcIcon from '@mui/icons-material/Wc';
 import { getAllElectionsByUserId } from '../../api/electionApi';
 import Alert from '@mui/material/Alert';
 import GroupsIconIcon from '@mui/icons-material/BlurLinear';
@@ -92,6 +93,9 @@ const ManageElection = () => {
 
   const handleGroupClick = (id) => {
      navigate(`/election/${id}/group`);
+  };  
+  const handleCandidateClick = (id) => {
+     navigate(`/election/${id}/candidate`);
   };
 
   const handleConfirmDelete = () => {
@@ -142,7 +146,7 @@ const ManageElection = () => {
     {
       field: 'actions',
       headerName: 'Actions',
-      width: 200,
+      width: 230,
       renderCell: (params) => (
         <>
           <Tooltip title="Edit">
@@ -163,6 +167,11 @@ const ManageElection = () => {
           <Tooltip title="Groups">
             <IconButton onClick={() => handleGroupClick(params.row.id)} color="error">
               <GroupsIconIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Candidates">
+            <IconButton onClick={() => handleCandidateClick(params.row.id)} color="blue">
+              <WcIcon />
             </IconButton>
           </Tooltip>
         </>

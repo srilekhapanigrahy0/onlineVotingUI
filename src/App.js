@@ -28,9 +28,10 @@ import CreateGroup from './components/ElectionGroup/CreateGroup';
 import EditGroup from './components/ElectionGroup/EditGroup';
 import ViewGroup from './components/ElectionGroup/ViewGroup';
 
-import ManageCandidate from './components/CandidateRegistration/ManageCandidate';
-import CreateCandidate from './components/CandidateRegistration/CreateCandidate';
-import EditCandidate from './components/CandidateRegistration/EditCandidate';
+import VoterListUploader from './components/Voter/VoterListUploa';
+
+import CandidateRegistration from './components/Candidate/CandidateRegistration';
+import ManageCandidate from './components/Candidate/ManageCandidate';
 
 import Homepage from './components/Homepage';
 import UserLoginPage from './components/UserLogin';
@@ -86,9 +87,11 @@ const App = () => {
                 <Route path="/election/:electionId/group/view/:id" element={<ViewGroup />} />
                 <Route path="/election/:electionId/group/edit/:id" element={<EditGroup />} /> 
 
-                <Route path="/CandidateRegistration" element={<ManageCandidate />} />
-                <Route path="/CandidateRegistration/create" element={<CreateCandidate />} />
-                <Route path="/CandidateRegistration/edit/:id" element={<EditCandidate />} />                             
+                <Route path="/election/:electionId/group/:groupId/votorList" element={<VoterListUploader />} />
+
+                <Route path="/election/candidate" element={<ManageCandidate />} /> 
+                <Route path="/election/:electionId/candidate" element={<ManageCandidate />} /> 
+                <Route path="/election/:electionId/candidate/registation" element={<CandidateRegistration />} />                           
               
                 {/* <Route path="/team" element={<Team />} />
                 <Route path="/contact/email" element={<Email />} />
