@@ -14,23 +14,19 @@ import Typography from '@mui/material/Typography';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import HomeIcon from '@mui/icons-material/Home';
-import FactoryIcon from '@mui/icons-material/Factory';
-import ListRoundedIcon from '@mui/icons-material/ListRounded';
-import SettingsIcon from '@mui/icons-material/Settings';
-import InfoIcon from '@mui/icons-material/Info';
+import HowToVoteIcon from '@mui/icons-material/HowToVote';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
 import HelpIcon from '@mui/icons-material/Help';
 import FeedbackIcon from '@mui/icons-material/Feedback';
-import PersonIcon from '@mui/icons-material/Person';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import BusinessIcon from '@mui/icons-material/Business';
-import GroupIcon from '@mui/icons-material/Group';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import SupportIcon from '@mui/icons-material/Support';
 import RateReviewIcon from '@mui/icons-material/RateReview';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import WcIcon from '@mui/icons-material/Wc';
+import ViewModuleIcon from '@mui/icons-material/ViewModule';
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -74,14 +70,14 @@ const Sidebar = ({ open, onClose }) => {
   const menus = [
     { name: 'Home', icon: <HomeIcon />, submenus: [], link: '/' }, // No submenus for Home
     { name: 'Company', icon: <BusinessIcon />, submenus: [], link: '/company'},
-    { name: 'Election', icon: <InfoIcon />, submenus: []},
-    { name: 'Candidate', icon: <InfoIcon />, submenus: [
-      { name: 'Candidate registration', icon: <BusinessIcon />, link: '/company' },
-      { name: 'Team', icon: <GroupIcon />, link: '/team' },
+    { name: 'Election', icon: <HowToVoteIcon />, submenus: [], link: '/election'},
+    // { name: 'ElectionGroup', icon: <InfoIcon />, submenus: [], link: '/electionGroup'},
+    { name: 'Candidate', icon: <WcIcon />, submenus: [
+      { name: 'View All', icon: <ViewModuleIcon />, link: '/election/candidate' }
     ]},
-    { name: 'Voter', icon: <InfoIcon />, submenus: [
-      { name: 'Voter list upload', icon: <BusinessIcon />, link: '/company' },
-    ]},
+    // { name: 'Voter', icon: <InfoIcon />, submenus: [
+    //   { name: 'Voter list upload', icon: <BusinessIcon />, link: '/company' },
+    // ]},
     { name: 'master configuration', icon: <ContactMailIcon />, submenus: [
       { name: 'Country', icon: <EmailIcon />, link: '/contact/email' },
       { name: 'State', icon: <PhoneIcon />, link: '/contact/phone' },

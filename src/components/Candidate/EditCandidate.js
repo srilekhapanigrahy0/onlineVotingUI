@@ -1,0 +1,60 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { TextField, Button, Paper, Snackbar } from '@mui/material';
+
+const EditCandidate = () => {
+    const [name, setName] = useState('');
+    const [details, setDetails] = useState('');
+    const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
+    
+    const handleSave = () => {
+      // Save company logic here
+      setOpen(true);
+      navigate('/CandidateRegistration/edit/');
+    };
+    const handleClose = () => {
+    setOpen(false);
+    };
+    return (
+    <Paper style={{ padding: 16 }}>
+      <TextField
+        label="Candidate Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        variant="outlined"
+        fullWidth
+        margin="normal"
+      />
+      <TextField
+        label=" Candidate Details"
+        value={details}
+        onChange={(e) => setDetails(e.target.value)}
+        variant="outlined"
+        fullWidth
+        margin="normal" 
+        multiline
+        rows={4} // You can adjust the number of rows as needed
+      />
+      <Button
+        variant="contained"
+        color="warning"
+        onClick={handleSave}
+        style={{ marginTop: 16, marginRight: 16 }}
+        >
+        reset
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleSave}
+        style={{ marginTop: 16 }}
+      >
+      Candidate Registration
+      </Button>
+  
+      </Paper>
+    );
+};
+
+export default EditCandidate;

@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Button, Tooltip, IconButton, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { Button, Tooltip, Switch, IconButton, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { Edit, Visibility, Delete } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 import { Snackbar } from '@mui/material';
-import { fetchCompaniesByUserId } from '../../api/companyApi';
+import { Edit, Visibility, Delete } from '@mui/icons-material';
+import WcIcon from '@mui/icons-material/Wc';
+import { getAllElectionsByUserId } from '../../api/electionApi';
 import Alert from '@mui/material/Alert';
+import GroupsIconIcon from '@mui/icons-material/BlurLinear';
 
-
-const ManageCompany = () => {
-  const [companies, setCompanies] = useState([]);
+const ManageElection = () => {
+  const [elections, setElections] = useState([]);
   const [pageSize, setPageSize] = useState(10);
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
@@ -21,7 +22,7 @@ const ManageCompany = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    loadCompanies();
+    loadElections();
 
     // Show Snackbar if redirected from other page
     if (location.state?.message) {
@@ -29,39 +30,40 @@ const ManageCompany = () => {
       setSnackbarSeverity(location.state.severity || 'success');
       setOpenSnackbar(true);
       setTimeout(() => {
-        navigate('/company', { state: null }); // Reset state to avoid future Snackbar triggers
+        navigate('/election', { state: null }); // Reset state to avoid future Snackbar triggers
       }, 6000); 
 
     }
-  }, [location.state]);
+  }, [location.state, navigate]);
 
-  const loadCompanies = async () => {
+  const loadElections = async () => {
     try {
       const userId = localStorage.getItem('userId');
 
-      const data = await fetchCompaniesByUserId(userId);
-      setCompanies(data);
-      setSnackbarMessage('Companies loaded successfully!');
+      const data = await getAllElectionsByUserId(userId);
+      console.log(data);
+      setElections(data);
+      setSnackbarMessage('Elections loaded successfully!');
       setSnackbarSeverity('success');
       setOpenSnackbar(true);
     } catch (err) {
-      console.error('Failed to fetch companies:', err);
-      setSnackbarMessage('Failed to load companies.');
+      console.error('Failed to fetch elections:', err);
+      setSnackbarMessage('Failed to load elections.');
       setSnackbarSeverity('error');
       setOpenSnackbar(true);
-      // setError('Failed to load companies');
+      // setError('Failed to load elections');
     } finally {
       // setLoading(false);
     }
   };
 
-  const handleToggleActive = (id) => {
-    setCompanies((prevCompanies) =>
-      prevCompanies.map((company) =>
-        company.id === id ? { ...company, active: !company.active } : company
-      )
-    );
-  };
+  // const handleToggleActive = (id) => {
+  //   setElections((prevElections) =>
+  //     prevElections.map((election) =>
+  //       election.id === id ? { ...election, active: !election.active } : election
+  //     )
+  //   );
+  // };
 
   const getStatusStyle = (status) => {
     switch (status) {
@@ -77,11 +79,11 @@ const ManageCompany = () => {
   };
 
   const handleEdit = (id) => {
-    navigate(`/company/edit/${id}`);
+    navigate(`/election/edit/${id}`);
   };
 
   const handleView = (id) => {
-    navigate(`/company/view/${id}`);
+    navigate(`/election/view/${id}`);
   };
 
   const handleDeleteClick = (id) => {
@@ -89,8 +91,15 @@ const ManageCompany = () => {
     setOpenDialog(true);
   };
 
+  const handleGroupClick = (id) => {
+     navigate(`/election/${id}/group`);
+  };  
+  const handleCandidateClick = (id) => {
+     navigate(`/election/${id}/candidate`);
+  };
+
   const handleConfirmDelete = () => {
-    setCompanies(companies.filter((company) => company.id !== deleteId));
+    setElections(elections.filter((election) => election.id !== deleteId));
     setOpenDialog(false);
     setDeleteId(null);
   };
@@ -100,11 +109,14 @@ const ManageCompany = () => {
     setDeleteId(null);
   };
 
+
   const columns = [
-    { field: 'name', headerName: 'Company Name', width: 300 },
-    { field: 'createdBy', headerName: 'Created By', width: 150 },
-    { field: 'createdOn', headerName: 'Created On', width: 150 },
-    {
+    { field: 'company_id', headerName: 'Company Name', width: 150 },
+    { field: 'name', headerName: 'Election Name', width: 200 },
+    { field: 'start_date', headerName: 'Start Date', width: 150 },
+    { field: 'end_date', headerName: 'End Date', width: 150 },
+    { field: 'created_by', headerName: 'Created By', width: 150 },
+        {
       field: 'status',
       headerName: 'Status',
       width: 150,
@@ -118,6 +130,7 @@ const ManageCompany = () => {
         )
       ),
     },
+    
     // {
     //   field: 'active',
     //   headerName: 'Active',
@@ -133,7 +146,7 @@ const ManageCompany = () => {
     {
       field: 'actions',
       headerName: 'Actions',
-      width: 150,
+      width: 230,
       renderCell: (params) => (
         <>
           <Tooltip title="Edit">
@@ -149,6 +162,16 @@ const ManageCompany = () => {
           <Tooltip title="Delete">
             <IconButton onClick={() => handleDeleteClick(params.row.id)} color="error">
               <Delete />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Groups">
+            <IconButton onClick={() => handleGroupClick(params.row.id)} color="error">
+              <GroupsIconIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Candidates">
+            <IconButton onClick={() => handleCandidateClick(params.row.id)} color="blue">
+              <WcIcon />
             </IconButton>
           </Tooltip>
         </>
@@ -173,11 +196,11 @@ const ManageCompany = () => {
         </Alert>
       </Snackbar>
 
-      <Button variant="contained" color="primary" onClick={() => navigate('/company/create')} style={{ margin: '16px 0' }}>
-        Create New Company
+      <Button variant="contained" color="primary" onClick={() => navigate('/election/create')} style={{ margin: '16px 0' }}>
+        Create New election
       </Button>
       <DataGrid 
-        rows={companies} 
+        rows={elections} 
         columns={columns} 
         pageSize={pageSize} 
         sx={{
@@ -190,18 +213,19 @@ const ManageCompany = () => {
         rowsPerPageOptions={[5, 10, 25]} 
         pagination 
         autoHeight
-        />
-      
+      />
+        
       <Dialog open={openDialog} onClose={handleCancelDelete}>
         <DialogTitle>Confirm Deletion</DialogTitle>
-        <DialogContent>Are you sure you want to delete this company?</DialogContent>
+        <DialogContent>Are you sure you want to delete this election?</DialogContent>
         <DialogActions>
           <Button onClick={handleCancelDelete} color="primary">Cancel</Button>
           <Button onClick={handleConfirmDelete} color="error">Delete</Button>
         </DialogActions>
       </Dialog>
+
     </div>
   );
 };
 
-export default ManageCompany;
+export default ManageElection;

@@ -10,13 +10,31 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import Header from './components/_layout/Header';
 import Footer from './components/_layout/Footer';
 import Sidebar from './components/_layout/Sidebar';
-import Content from './components/_layout/Content';
+import Dashboard from './components/_layout/Content';
 import Breadcrumb from './components/_layout/Breadcrumb';
 
 import CreateCompany from './components/Company/CreateCompany';
 import ManageCompany from './components/Company/ManageCompany';
 import ViewCompany from './components/Company/ViewCompany';
 import EditCompany from './components/Company/EditCompany';
+
+import ManageElection from './components/Election/ManageElection';
+import CreateElection from './components/Election/CreateElection';
+import EditElection from './components/Election/EditElection';
+import ViewElection from './components/Election/ViewElection';
+
+import ManageGroup from './components/ElectionGroup/ManageGroup';
+import CreateGroup from './components/ElectionGroup/CreateGroup';
+import EditGroup from './components/ElectionGroup/EditGroup';
+import ViewGroup from './components/ElectionGroup/ViewGroup';
+
+import VoterListUploader from './components/Voter/VoterListUploa';
+
+import CandidateRegistration from './components/Candidate/CandidateRegistration';
+import ManageCandidate from './components/Candidate/ManageCandidate';
+
+import Homepage from './components/Homepage';
+import UserLoginPage from './components/UserLogin';
 
 import ViewProfile from './components/Profile/ViewProfile';
 import Login from './components/Security/Login/Login';
@@ -27,6 +45,7 @@ const theme = createTheme({
 
 const App = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const userId = localStorage.getItem('userId');
 
   const handleSidebarToggle = () => {
     setSidebarOpen(!sidebarOpen);
@@ -37,20 +56,43 @@ const App = () => {
       <CssBaseline />
       <Router>
         <Box sx={{ display: 'flex', minHeight: '100vh', flexDirection: 'column' }}>
-          <Header onSidebarToggle={handleSidebarToggle} />
+          {
+            (userId != null) &&
+            <Header onSidebarToggle={handleSidebarToggle} />
+          }
           <Box sx={{ display: 'flex', flexGrow: 1 }}>
             
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
             <Breadcrumb /> {/* Add Breadcrumb component */}
               <Routes>
-                <Route path="/" element={<Content />} />
+                <Route path="/" element={<Homepage />} />
+                <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/view-profile" element={<ViewProfile />} />
-                
-                <Route path="/login" element={<Login />} />
+                <Route path="/user-login" element={<UserLoginPage />} />
+                {/* <Route path="/login" element={<Login />} /> */}
+
                 <Route path="/company" element={<ManageCompany />} />
                 <Route path="/company/create" element={<CreateCompany />} />
                 <Route path="/company/view/:id" element={<ViewCompany />} />
                 <Route path="/company/edit/:id" element={<EditCompany />} />
+
+                <Route path="/election" element={<ManageElection />} />
+                <Route path="/election/create" element={<CreateElection />} />
+                <Route path="/election/view/:id" element={<ViewElection />} />
+                <Route path="/election/:id" element={<ViewElection />} />
+                <Route path="/election/edit/:id" element={<EditElection />} />
+
+                <Route path="/election/:electionId/group" element={<ManageGroup />} />
+                <Route path="/election/:electionId/group/create" element={<CreateGroup />} />
+                <Route path="/election/:electionId/group/view/:id" element={<ViewGroup />} />
+                <Route path="/election/:electionId/group/edit/:id" element={<EditGroup />} /> 
+
+                <Route path="/election/:electionId/group/:groupId/votorList" element={<VoterListUploader />} />
+
+                <Route path="/election/candidate" element={<ManageCandidate />} /> 
+                <Route path="/election/:electionId/candidate" element={<ManageCandidate />} /> 
+                <Route path="/election/:electionId/candidate/registation" element={<CandidateRegistration />} />                           
+              
                 {/* <Route path="/team" element={<Team />} />
                 <Route path="/contact/email" element={<Email />} />
                 <Route path="/contact/phone" element={<Phone />} />
@@ -63,7 +105,10 @@ const App = () => {
             </Box>
             <Sidebar open={sidebarOpen} onClose={handleSidebarToggle} />
           </Box>
-          <Footer />
+          {
+            (userId != null) &&
+            <Footer />
+          }
         </Box>
       </Router>
     </ThemeProvider>
