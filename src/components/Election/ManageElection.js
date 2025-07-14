@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Tooltip, Switch, IconButton, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { Button, Tooltip, IconButton, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useLocation } from 'react-router-dom';
 import { Snackbar } from '@mui/material';
@@ -34,7 +34,7 @@ const ManageElection = () => {
       }, 6000); 
 
     }
-  }, [location.state]);
+  }, [location.state, navigate]);
 
   const loadElections = async () => {
     try {
@@ -57,13 +57,13 @@ const ManageElection = () => {
     }
   };
 
-  const handleToggleActive = (id) => {
-    setElections((prevElections) =>
-      prevElections.map((election) =>
-        election.id === id ? { ...election, active: !election.active } : election
-      )
-    );
-  };
+  // const handleToggleActive = (id) => {
+  //   setElections((prevElections) =>
+  //     prevElections.map((election) =>
+  //       election.id === id ? { ...election, active: !election.active } : election
+  //     )
+  //   );
+  // };
 
   const getStatusStyle = (status) => {
     switch (status) {

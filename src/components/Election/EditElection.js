@@ -31,7 +31,7 @@ const EditElection = () => {
   useEffect(() => {
     fetchCompanies();
     fetchElectionDetails();
-  }, []);
+  }, [fetchCompanies, fetchElectionDetails]);
 
   const fetchCompanies = async () => {
     try {

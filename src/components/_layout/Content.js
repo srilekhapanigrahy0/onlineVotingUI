@@ -57,7 +57,7 @@ function DashboardPage() {
     };
 
     fetchData();
-  }, []);
+  }, [navigate]);
 
   const handleLogout = async () => {
     try {
@@ -78,7 +78,6 @@ function DashboardPage() {
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <h1>Dashboard</h1>
       {error ? (
         <div style={{ color: 'red', border: '1px solid red', padding: '10px', borderRadius: '5px', marginBottom: '20px' }}>
           <p>Error: {error.message}</p>
@@ -109,10 +108,10 @@ function DashboardPage() {
             )}
           </div>
 
-          <div style={{ border: '1px solid #e0e0e0', padding: '15px', borderRadius: '8px', marginBottom: '20px', backgroundColor: '#f9f9f9' }}>
+          {message && <div style={{ border: '1px solid #e0e0e0', padding: '15px', borderRadius: '8px', marginBottom: '20px', backgroundColor: '#f9f9f9' }}>
             <h3>Message from Spring Boot Backend:</h3>
             <p style={{ fontWeight: 'bold', color: '#28a745' }}>{message}</p>
-          </div>
+          </div>}
 
           {/* Admin Panel (Conditionally Rendered) */}
           {isAdmin && <AdminPanel />}

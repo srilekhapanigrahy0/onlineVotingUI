@@ -3,13 +3,12 @@ import {
   Box, Button, Link, Snackbar, Dialog, DialogTitle,
   DialogContent, DialogActions, Table, TableBody, TableRow, TableCell, Alert
 } from '@mui/material';
-import { useParams } from 'react-router-dom';
+//import { useParams } from 'react-router-dom';
 import * as XLSX from 'xlsx';
-import axios from 'axios';
 
 const VoterListUploader = () => {
-  const { election_group_id } = useParams();
-  const user_id = localStorage.getItem('user_id');
+  //const { election_group_id } = useParams();
+  //const user_id = localStorage.getItem('user_id');
 
   const fileInputRef = useRef(null);
   const [parsedData, setParsedData] = useState([]);
@@ -58,11 +57,11 @@ const VoterListUploader = () => {
 
   const handleConfirm = async () => {
     try {
-      const payload = {
-        election_group_id,
-        user_id,
-        rows: parsedData
-      };
+      // const payload = {
+      //   election_group_id,
+      //   user_id,
+      //   rows: parsedData
+      // };
       //await axios.post('/api/upload-excel', payload); // replace with your API
       setSnackbarMsg('Upload successful!');
       setUploadedData(parsedData);
